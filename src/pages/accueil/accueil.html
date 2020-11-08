@@ -1,0 +1,72 @@
+<ion-content>
+  
+  <!-- Pour la publicité -->
+<!--   <ion-row>
+    <div class="publicite_top" *ngIf="mikiPublicite.publicites != undefined && mikiPublicite.publicites.top.length > 0" [innerHTML]="mikiPublicite.current('top')"></div>
+  </ion-row> -->
+
+
+  <div class="accueil-container">
+    <div class="top">
+      <ion-row>
+        <ion-col class="logo"><img src="assets/img/logo-couleur.png"></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="slogan">Catalogue de formation</ion-col>
+      </ion-row>
+    </div>
+    <div class="bottom">
+      <div class="home-background">
+        <ion-row class="line1">
+          <ion-col width-50 class="home-grid" (click)="goto(1)">
+            <ion-row center><ion-col>Ambulancier</ion-col></ion-row>
+          </ion-col>
+          <ion-col width-50 class="home-grid" (click)="goto(2)">
+            <ion-row center><ion-col center>Professionnel<br>médical</ion-col></ion-row>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="line1">
+          <ion-col width-50 class="home-grid" (click)="goto(3)">
+            <ion-row center><ion-col>Instructeur/<br>Formateur</ion-col></ion-row>
+          </ion-col>
+          <ion-col width-50 class="home-grid" (click)="goto(4)">
+            <ion-row center><ion-col center>Entreprise/<br>Association</ion-col></ion-row>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="line1">
+          <ion-col width-50 class="home-grid" (click)="goto(5)">
+            <ion-row center><ion-col>Grand Public</ion-col></ion-row>
+          </ion-col>
+          <ion-col width-50 class="home-grid" (click)="goto(6)">
+            <ion-row center><ion-col center>Toutes nos<br>formations</ion-col></ion-row>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="line2" *ngIf="!mikiPerson.user">
+          <ion-col width-50 class="home-grid" (click)="goto(7)">
+            <ion-row center><ion-col center>Connexion</ion-col></ion-row>
+          </ion-col>
+          <ion-col width-50 class="home-grid" (click)="goto(8)">
+            <ion-row center><ion-col center>Créer un<br>compte</ion-col></ion-row>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="line2" *ngIf="mikiPerson.user">
+          <ion-col class="home-grid home-grid__full">
+            <ion-row center><ion-col center>
+              <p class="accueil_connected_text">
+                Vous êtes connecté en tant que<br>
+                <button ion-button clear (click)="goto(9)">{{mikiPerson.user.firstname}} {{mikiPerson.user.lastname}}</button>
+              </p>
+              <button ion-button clear (click)="goto(10)">Se déconnecter</button>
+            </ion-col></ion-row>
+          </ion-col>
+        </ion-row>
+      </div>
+    </div>
+  </div>
+
+
+</ion-content>

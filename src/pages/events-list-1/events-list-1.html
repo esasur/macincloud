@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>{{pageTitle}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="events-list-1">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingText="Tirer pour mettre à jour"
+      refreshingText="Mise à jour...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+
+
+  <!-- Pour la publicité -->
+  <ion-row>
+    <div class="publicite_top" *ngIf="idCategory == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+    <div class="publicite_top" *ngIf="idCategory == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+  </ion-row>
+
+
+  <!-- Pour le filtre par thème -->
+  <!-- <ion-list *ngIf="idCategory == 1"> -->
+  <ion-list>
+    <ion-item>
+      <ion-label>Thème</ion-label>
+      <ion-select [(ngModel)]="id_theme" (ionChange)="searchEvents()" class="select_id_theme">
+        <ion-option value="">Tous</ion-option>
+        <ion-option *ngFor="let theme of themes" [value]="theme.id">{{theme.name.fr}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+
+  <!-- Pour le filtre par subvention -->
+  <ion-list *ngIf="idCategory == 1">
+    <ion-item>
+      <ion-label>Subvention VD</ion-label>
+      <ion-select [(ngModel)]="subvention_vd" (ionChange)="searchEvents()" class="select_subvention">
+        <ion-option value="">Tous</ion-option>
+        <ion-option value="1">Oui</ion-option>
+        <ion-option value="0">Non</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+
+  <!-- Pour la barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="search"
+    [showCancelButton]="true"
+    [placeholder]="Rechercher"
+    [cancelButtonText]="Annuler"
+    (ionInput)="searchEvents($event)"
+    (ionCancel)="clearSearchEvents($event)">
+  </ion-searchbar>
+
+
+  <!-- Liste des events -->
+  <ion-list>
+    <!-- s'il aucun event n'a été trouvé -->
+    <ion-item *ngIf="foundEvents.length == 0">
+      <h2>Aucune formation pour cette sélection actuellement</h2>
+    </ion-item>
+
+    <ion-item *ngFor="let event of foundEvents" (click)="eventClick($event, event)" [ngClass]="{passed: !event.futur}">
+      <!-- <ion-thumbnail item-left>
+        <img [src]="event.pic">
+      </ion-thumbnail> -->
+
+      <!-- <div *ngIf="event.id_category == 1 || event.id_category == 19">
+        <h2 [innerHTML]="event.description.fr"></h2>
+        <p class="cours_complet" *ngIf="event.max_participants != 0 && event.max_participants - event.nb_participants == 0">Complet</p>
+        <p *ngIf="event.date_start != '0000-00-00 00:00:00'">{{events.getDate(event.date_start)}}<span *ngIf="event.date_start != event.date_stop"> - {{events.getDate(event.date_stop)}}</span></p>
+        <p *ngIf="event.date_start == '0000-00-00 00:00:00'">Date précisée ultérieurement</p>
+      </div> -->
+      <!-- <div *ngIf="event.id_category == 15 || event.id_category == 18"> -->
+      <div>
+      <h2 [innerHTML]="event.title.fr"></h2>
+        <p *ngIf="event.date_start != '0000-00-00 00:00:00'">{{events.getDate(event.date_start)}}<span *ngIf="event.date_start != event.date_stop"> - {{events.getDate(event.date_stop)}}</span></p>
+        <p *ngIf="event.date_start == '0000-00-00 00:00:00'">Date précisée ultérieurement</p>
+      </div>
+      <ion-icon name="arrow-forward" item-right></ion-icon>
+      <!-- <button ion-button clear item-right>Détails</button> -->
+    </ion-item>
+  </ion-list>
+</ion-content>

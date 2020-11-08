@@ -1,0 +1,455 @@
+<ion-header>
+	<ion-navbar>
+	  <ion-title>
+	  	<div class="toolbar-title" [innerHTML]="eventTitle"></div>
+	  </ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+
+<!-- si l'organisateur n'est pas ES ASUR et qu'un lien est configuré pour le cours, on affiche un message -->
+<ion-content class="event-details-3" *ngIf="myEvent.organizer != 'ES ASUR' && myEvent.web != ''">
+	
+	<!-- Pour la publicité -->
+	<ion-row>
+	  	<div class="publicite_top" *ngIf="myEvent.category.id == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+	    <div class="publicite_top" *ngIf="myEvent.category.id == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+	</ion-row>
+
+
+
+	<ion-row>
+	  <p>Pour vous inscrire, veuillez vous rendre sur <a onclick="window.open(this.href, '_system', 'location=yes');" target='_blank' [href]=myEvent.web>cette page</a></p>
+	</ion-row>
+</ion-content>
+
+
+
+<!-- sinon on affiche les options d'inscription -->
+<ion-content class="event-details-3" *ngIf="myEvent.organizer == 'ES ASUR' || myEvent.web == ''">
+
+	<!-- Pour la publicité -->
+	<ion-row>
+	  	<div class="publicite_top" *ngIf="myEvent.category.id == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+	    <div class="publicite_top" *ngIf="myEvent.category.id == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+	</ion-row>
+	
+	<ion-row *ngIf="stateSubscription == 0">
+	  <h2>Les inscriptions sont actuellement fermées.</h2>
+	</ion-row>
+
+	<ion-row *ngIf="stateSubscription == 1">
+	  <h2>Vous ne pouvez pas participer au cours. Ce cours est limité à un certains types de professions.</h2>
+	</ion-row>
+
+	<ion-row *ngIf="stateSubscription == 2">
+	  <h2>Seuls les membres de %s peuvent s'inscrire.</h2>
+	</ion-row>
+
+	<ion-row *ngIf="stateSubscription == 3">
+	  <h2>Vous êtes déjà inscrit à cet événement.</h2>
+	</ion-row>
+
+	<ion-row *ngIf="stateSubscription == 4">
+	  <h2>Votre inscription à cet événement est en attente de validation.</h2>
+	</ion-row>
+
+
+	<ion-row *ngIf="!user" class="button-connection" (click)="gotoLogin()">
+	  <button ion-button block>Se connecter</button>
+	</ion-row>
+
+
+
+	<ion-list *ngIf="stateSubscription == 5">
+
+		<form [formGroup]="eventSubscribeForm" (ngSubmit)="onSubmit(eventSubscribeForm.value)">
+	    
+		  	<ion-row>
+				<ion-col width-33><strong>Places disponibles</strong></ion-col>
+				<ion-col width-67>{{msgParticipants}}</ion-col>
+			</ion-row>
+
+			<ion-row *ngIf="accompanist > 0">
+				<ion-col width-33><strong>Accompagnants</strong></ion-col>
+				<ion-col width-67>{{accompanist}} pour chaque inscription</ion-col>
+			</ion-row>
+
+			<!-- si l'inscription est payante -->
+		  	<ion-item *ngIf="myEvent.entrance_type == 1">
+				<ion-label stacked>Tarif :</ion-label>
+				<ion-select formControlName="subscriptionPriceId">
+					<ion-option value="" selected="true">Veuillez choisir un prix</ion-option>
+					<ion-option *ngFor="let eventPrice of eventPrices" [value]="eventPrice.id">{{eventPrice.priceName}}</ion-option>
+				</ion-select>
+	    	</ion-item>
+		    <ion-item *ngIf="myEvent.entrance_type == 1">
+				  <h3 *ngFor="let eventPrice of eventPrices">
+				  	<ion-row *ngIf="eventPrice.id == eventSubscribeForm.controls.subscriptionPriceId.value">{{eventPrice.description}}</ion-row>
+				  </h3>
+		    </ion-item>
+		    <!-- si l'inscription est gratuite -->
+		    <ion-row *ngIf="myEvent.entrance_type == 0">
+		      <ion-col width-33><strong>Tarif :</strong></ion-col>
+					<ion-col width-67>Gratuit</ion-col>
+		    </ion-row>
+
+		  	<ion-list-header>
+				<ion-label>Données personnelles</ion-label>
+			</ion-list-header>
+				
+
+			<!-- si l'utilisateur n'est pas loggué ou que le champ n'est pas rempli, on affiche le champ du formulaire -->
+		  	<ion-item *ngIf="user == false || user.type == ''">
+		      <ion-label>Genre : *</ion-label>
+		      <ion-select formControlName="subscriptionType">
+		          <ion-option value="M">M</ion-option>
+		          <ion-option value="Mlle">Mlle</ion-option>
+		          <ion-option value="Mme">Mme</ion-option>
+		      </ion-select>
+		    </ion-item>
+		    <!-- si l'utilisateur est loggué et que le champ est rempli, on affiche uniquement la valeur de ce champ -->
+		    <ion-row *ngIf="user != false && user.type != ''">
+		      <ion-col width-33><strong>Genre :</strong></ion-col>
+					<ion-col width-67>{{user.type}}</ion-col>
+		    </ion-row>
+		    
+
+		    <ion-item *ngIf="user == false || user.lastname == ''" [class.error]="!eventSubscribeForm.controls.subscriptionLastname.valid && eventSubscribeForm.controls.subscriptionLastname.touched">
+		      <ion-label stacked>Nom : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionLastname"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionLastname.hasError('required') && eventSubscribeForm.controls.subscriptionLastname.touched" class="error-box">
+		    	* Le nom n'a pas été fourni
+		    </div>
+		    <ion-row *ngIf="user != false && user.lastname != ''">
+		        <ion-col width-33><strong>Nom :</strong></ion-col>
+				<ion-col width-67>{{user.lastname}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.firstname == ''" [class.error]="!eventSubscribeForm.controls.subscriptionFirstname.valid && eventSubscribeForm.controls.subscriptionFirstname.touched">
+		      <ion-label stacked>Prénom : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionFirstname"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionFirstname.hasError('required') && eventSubscribeForm.controls.subscriptionFirstname.touched" class="error-box">
+		    	* Le prénom n'a pas été fourni
+		    </div>
+		    <ion-row *ngIf="user != false && user.firstname != ''">
+		      <ion-col width-33><strong>Prénom :</strong></ion-col>
+					<ion-col width-67>{{user.firstname}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.birthday == ''">
+		      <!-- <ion-label stacked>Date de naissance : *</ion-label> -->
+		      <ion-label>Date de naissance : *</ion-label>
+		      <ion-select formControlName="subscriptionBirthday_day">
+		        <ion-option *ngFor="let day of days" [value]="day">{{day}}</ion-option>
+		      </ion-select>&nbsp;
+		      <ion-select formControlName="subscriptionBirthday_month">
+		        <ion-option *ngFor="let month of months; let i = index" [value]="i">{{month}}</ion-option>
+		      </ion-select>&nbsp;
+		      <ion-select formControlName="subscriptionBirthday_year">
+		        <ion-option *ngFor="let year of years" [value]="year">{{year}}</ion-option>
+		      </ion-select>
+		    </ion-item>
+		    <ion-row *ngIf="user != false && user.birthday != ''">
+		      <ion-col width-33><strong>Date de naissance :</strong></ion-col>
+					<ion-col width-67>{{user.birthday}}</ion-col>
+		    </ion-row>
+
+
+		    <!-- si le cours est pour un public non-professionnel, on n'affiche pas le choix du type d'adresse, c'est automatiquement l'adresse privée qui est prise en compte -->
+			<ion-item [hidden]="eventPublicType == 1" *ngIf="eventPublicType == 1 || user == false || user.others.type_adresse_courrier == '' || user.others.type_adresse_courrier == undefined" [class.error]="!eventSubscribeForm.controls.subscriptionAddressMailingType.valid && eventSubscribeForm.controls.subscriptionAddressMailingType.touched">
+		      <ion-label stacked>Adresse pour le courrier : *</ion-label>
+		      <ion-select formControlName="subscriptionAddressMailingType">
+		      	<ion-option value="">Veuillez choisir une adresse</ion-option>
+		        <ion-option value="Professionnelle">Professionnelle</ion-option>
+	          <ion-option value="Privée">Privée</ion-option>
+		      </ion-select>
+		    </ion-item>
+		    <ion-row *ngIf="eventPublicType == 0 && user != false && user.others.type_adresse_courrier != '' && user.others.type_adresse_courrier != undefined">
+		      <ion-col width-33><strong>Adresse pour le courrier : </strong></ion-col>
+			  <ion-col width-67>{{user.others.type_adresse_courrier}}</ion-col>
+		    </ion-row>
+
+
+		    <!-- si le cours est pour un public non-professionnel, on n'affiche pas le choix du type d'adresse, c'est automatiquement l'adresse privée qui est prise en compte -->
+		    <ion-item [hidden]="eventPublicType == 1" *ngIf="eventPublicType == 1 || user == false || user.others.type_adresse_facturation == '' || user.others.type_adresse_facturation == undefined" [class.error]="!eventSubscribeForm.controls.subscriptionAddressBillingType.valid && eventSubscribeForm.controls.subscriptionAddressBillingType.touched">
+		      <ion-label stacked>Adresse pour la facturation : *</ion-label>
+		      <ion-select formControlName="subscriptionAddressBillingType">
+		      	<ion-option value="">Veuillez choisir une adresse</ion-option>
+		        <ion-option value="Professionnelle">Professionnelle</ion-option>
+	          <ion-option value="Privée">Privée</ion-option>
+		      </ion-select>
+		    </ion-item>
+		    <ion-row *ngIf="eventPublicType == 0 && user != false && user.others.type_adresse_facturation != '' && user.others.type_adresse_facturation != undefined">
+		      <ion-col width-33><strong>Adresse pour la facturation : </strong></ion-col>
+			  <ion-col width-67>{{user.others.type_adresse_facturation}}</ion-col>
+		    </ion-row>
+
+
+
+			<!-- Coordonnées privées -->
+
+			<ion-item *ngIf="user == false || user.address == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateAddress.valid && eventSubscribeForm.controls.subscriptionPrivateAddress.touched">
+		      <ion-label stacked>Rue : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionPrivateAddress"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateAddress.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateAddress.touched" class="error-box">
+		    	* La rue n'a pas été fournie
+		    </div>
+		    <ion-row *ngIf="user != false && user.address != ''">
+		      <ion-col width-33><strong>Rue :</strong></ion-col>
+					<ion-col width-67>{{user.address}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.npa == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateNpa.valid && eventSubscribeForm.controls.subscriptionPrivateNpa.touched">
+		      <ion-label stacked>Code postal : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionPrivateNpa"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateNpa.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateNpa.touched" class="error-box">
+		    	* Le code postal n'a pas été fourni
+		    </div>
+		    <ion-row *ngIf="user != false && user.npa != ''">
+		      <ion-col width-33><strong>Code postal :</strong></ion-col>
+					<ion-col width-67>{{user.npa}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.city == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateCity.valid && eventSubscribeForm.controls.subscriptionPrivateCity.touched">
+		      <ion-label stacked>Localité : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionPrivateCity"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateCity.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateCity.touched" class="error-box">
+		    	* La localité n'a pas été fournie
+		    </div>
+		    <ion-row *ngIf="user != false && user.city != ''">
+		      <ion-col width-33><strong>Localité :</strong></ion-col>
+					<ion-col width-67>{{user.city}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.country == ''">
+		      <ion-label stacked>Pays : *</ion-label>
+		      <ion-select formControlName="subscriptionPrivateCountry">
+		      	<ion-option value="">Veuillez choisir un pays</ion-option>
+		        <ion-option *ngFor="let country of countries" [value]="country.id">{{country.name.fr}}</ion-option>
+		      </ion-select>
+		    </ion-item>
+		    <ion-row *ngIf="user != false && user.country != ''">
+		      <ion-col width-33><strong>Pays :</strong></ion-col>
+				<ion-col width-67>{{user.countryName}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.tel2 == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateMobile.valid && eventSubscribeForm.controls.subscriptionPrivateMobile.touched">
+		      <ion-label stacked>Tél. mobile : *</ion-label>
+		      <ion-input type="text" formControlName="subscriptionPrivateMobile"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateMobile.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateMobile.touched" class="error-box">
+		    	* Le téléphone mobile n'a pas été fourni
+		    </div>
+		    <ion-row *ngIf="user != false && user.tel2 != ''">
+		      <ion-col width-33><strong>Tél. mobile :</strong></ion-col>
+					<ion-col width-67>{{user.tel2}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.tel1 == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateFixe.valid && eventSubscribeForm.controls.subscriptionPrivateFixe.touched">
+		      <ion-label stacked>Tél. fixe :</ion-label>
+		      <ion-input type="text" formControlName="subscriptionPrivateFixe"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateFixe.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateFixe.touched" class="error-box">
+		    	* Le téléphone fixe n'a pas été fourni
+		    </div>
+		    <ion-row *ngIf="user != false && user.tel1 != ''">
+		      <ion-col width-33><strong>Tél. fixe :</strong></ion-col>
+					<ion-col width-67>{{user.tel1}}</ion-col>
+		    </ion-row>
+
+
+		    <ion-item *ngIf="user == false || user.email1 == ''" [class.error]="!eventSubscribeForm.controls.subscriptionPrivateEmail.valid && eventSubscribeForm.controls.subscriptionPrivateEmail.touched">
+		      <ion-label stacked>Email : *</ion-label>
+		      <ion-input type="email" formControlName="subscriptionPrivateEmail"></ion-input>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateEmail.hasError('required') && eventSubscribeForm.controls.subscriptionPrivateEmail.touched" class="error-box">
+		    	* L'adresse e-mail n'a pas été fournie
+		    </div>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionPrivateEmail.hasError('invalidEmailAddress') && eventSubscribeForm.controls.subscriptionPrivateEmail.touched" class="error-box">
+		      * L'adresse e-mail est invalide !
+		    </div>
+		    <ion-row *ngIf="user != false && user.email1 != ''">
+		      <ion-col width-33><strong>Email :</strong></ion-col>
+					<ion-col width-67>{{user.email1}}</ion-col>
+		    </ion-row>
+
+
+
+		    <!-- Coordonnées professionnelles -->
+
+		    <div *ngIf="eventPublicType == 0">
+
+			    <ion-list-header>
+				    <ion-label>Données professionnelles</ion-label>
+				</ion-list-header>
+
+			    <ion-item *ngIf="user == false || user.company.name == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProCompany.valid && eventSubscribeForm.controls.subscriptionProCompany.touched">
+			      <ion-label stacked>Nom de l'entreprise : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProCompany"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProCompany.hasError('required') && eventSubscribeForm.controls.subscriptionProCompany.touched" class="error-box">
+			    	* Le nom de l'entreprise n'a pas été fourni
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.name != ''">
+			      <ion-col width-33><strong>Nom de l'entreprise :</strong></ion-col>
+						<ion-col width-67>{{user.company.name}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.others.company_code == '' || user.others.company_code == undefined">
+			      <ion-label stacked>Code professionnel : *</ion-label>
+			      <ion-select formControlName="subscriptionProCompanyCode">
+			        <ion-option *ngFor="let codePro of codesPros" [value]="codePro.numero">{{codePro.nom}}</ion-option>
+
+						<!-- si il n'y a pas de restriction concernant les codes pro, on affiche la possibilité de mettre un code "autre" -->
+						<ion-option *ngIf="codeAutorises == ''" [value]="99">99 Autre</ion-option>
+			      </ion-select>
+			    </ion-item>
+			    <ion-row *ngIf="user != false && user.others.company_code != '' && user.others.company_code != undefined">
+			      <ion-col width-33><strong>Code professionnel :</strong></ion-col>
+						<ion-col width-67>{{user.company_code_name}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="(user == false || user.others.company_code == '' || user.others.company_code == undefined) && eventSubscribeForm.controls.subscriptionProCompanyCode.value == 99" [class.error]="!eventSubscribeForm.controls.subscriptionProCompanyCodeOther.valid && eventSubscribeForm.controls.subscriptionProCompanyCodeOther.touched">
+			      <ion-label stacked>Autre code professionnel : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProCompanyCodeOther"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProCompanyCode.value == 99 && eventSubscribeForm.controls.subscriptionProCompanyCodeOther.hasError('required') && eventSubscribeForm.controls.subscriptionProCompanyCodeOther.touched" class="error-box">
+			    	* Le code professionnel n'a pas été fourni
+			    </div>
+
+
+			    <ion-item *ngIf="user == false || user.company.address == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProAddress.valid && eventSubscribeForm.controls.subscriptionProAddress.touched">
+			      <ion-label stacked>Rue : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProAddress"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProAddress.hasError('required') && eventSubscribeForm.controls.subscriptionProAddress.touched" class="error-box">
+			    	* La rue n'a pas été fournie
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.address != ''">
+			      <ion-col width-33><strong>Rue :</strong></ion-col>
+						<ion-col width-67>{{user.company.address}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.npa == '' || user.company.npa == 0" [class.error]="!eventSubscribeForm.controls.subscriptionProNpa.valid && eventSubscribeForm.controls.subscriptionProNpa.touched">
+			      <ion-label stacked>Code postal : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProNpa"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProNpa.hasError('required') && eventSubscribeForm.controls.subscriptionProNpa.touched" class="error-box">
+			    	* Le code postal n'a pas été fourni
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.npa != '' && user.company.npa != 0">
+			      <ion-col width-33><strong>Code postal :</strong></ion-col>
+						<ion-col width-67>{{user.company.npa}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.city == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProCity.valid && eventSubscribeForm.controls.subscriptionProCity.touched">
+			      <ion-label stacked>Localité : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProCity"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProCity.hasError('required') && eventSubscribeForm.controls.subscriptionProCity.touched" class="error-box">
+			    	* La localité n'a pas été fournie
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.city != ''">
+			      <ion-col width-33><strong>Localité :</strong></ion-col>
+						<ion-col width-67>{{user.company.city}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.country == ''">
+			      <ion-label stacked>Pays : *</ion-label>
+			      <ion-select formControlName="subscriptionProCountry">
+			      	<ion-option>Veuillez choisir un pays</ion-option>
+			        <ion-option *ngFor="let country of countries" [value]="country.id">{{country.name.fr}}</ion-option>
+			      </ion-select>
+			    </ion-item>
+			    <ion-row *ngIf="user != false && user.company.country != ''">
+			      <ion-col width-33><strong>Pays :</strong></ion-col>
+						<ion-col width-67>{{user.company.countryName}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.tel == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProTel.valid && eventSubscribeForm.controls.subscriptionProTel.touched">
+			      <ion-label stacked>Tél : *</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProTel"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProTel.hasError('required') && eventSubscribeForm.controls.subscriptionProTel.touched" class="error-box">
+			    	* Le téléphone n'a pas été fourni
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.tel != ''">
+			      <ion-col width-33><strong>Tél :</strong></ion-col>
+						<ion-col width-67>{{user.company.tel}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.fax == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProFax.valid && eventSubscribeForm.controls.subscriptionProFax.touched">
+			      <ion-label stacked>Fax :</ion-label>
+			      <ion-input type="text" formControlName="subscriptionProFax"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProFax.hasError('required') && eventSubscribeForm.controls.subscriptionProFax.touched" class="error-box">
+			    	* Le fax n'a pas été fourni
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.fax != ''">
+			      <ion-col width-33><strong>Fax :</strong></ion-col>
+						<ion-col width-67>{{user.company.fax}}</ion-col>
+			    </ion-row>
+
+
+			    <ion-item *ngIf="user == false || user.company.email == ''" [class.error]="!eventSubscribeForm.controls.subscriptionProEmail.valid && eventSubscribeForm.controls.subscriptionProEmail.touched">
+			      <ion-label stacked>Email : *</ion-label>
+			      <ion-input type="email" formControlName="subscriptionProEmail"></ion-input>
+			    </ion-item>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProEmail.hasError('required') && eventSubscribeForm.controls.subscriptionProEmail.touched" class="error-box">
+			    	* L'adresse e-mail n'a pas été fournie
+			    </div>
+			    <div *ngIf="eventSubscribeForm.controls.subscriptionProEmail.hasError('invalidEmailAddress') && eventSubscribeForm.controls.subscriptionProEmail.touched" class="error-box">
+			      * L'adresse e-mail est invalide !
+			    </div>
+			    <ion-row *ngIf="user != false && user.company.email != ''">
+			      <ion-col width-33><strong>Email :</strong></ion-col>
+						<ion-col width-67>{{user.company.email}}</ion-col>
+			    </ion-row>
+			  </div>
+
+		     <!-- Autres informations -->
+		     <ion-list-header>
+			    <ion-label>Autres informations</ion-label>
+			 </ion-list-header>
+
+			  <ion-item [class.error]="!eventSubscribeForm.controls.subscriptionComment.valid && eventSubscribeForm.controls.subscriptionComment.touched">
+		      <ion-label stacked>Remarque :</ion-label>
+		      <ion-input type="text" formControlName="subscriptionComment"></ion-input>
+		    </ion-item>
+
+		    <ion-item [class.error]="!eventSubscribeForm.controls.subscriptionConditions.valid && eventSubscribeForm.controls.subscriptionConditions.touched">
+		      <ion-label>Accepter les <button ion-button clear (click)="openConditions()" class="button-modalites">modalités pratiques</button> *</ion-label>
+		      <ion-checkbox formControlName="subscriptionConditions"></ion-checkbox>
+		    </ion-item>
+		    <div *ngIf="eventSubscribeForm.controls.subscriptionConditions.hasError('notChecked') && eventSubscribeForm.controls.subscriptionConditions.touched" class="error-box">
+		      * Vous devez accepter les modalités pratiques !
+		    </div>
+
+		    <br/><br/>
+	    	<button ion-button type="submit" class="custom-button" [disabled]="!eventSubscribeForm.valid" block>S'inscrire</button>
+		</form>
+	
+	</ion-list>
+	
+</ion-content>

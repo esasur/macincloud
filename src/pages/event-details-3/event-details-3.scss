@@ -1,0 +1,23 @@
+event-details-3 {
+	// pour l'affichage des listes
+	ion-list .item-inner{
+		border-color: $color3;
+	}
+
+	.button-modalites{
+		padding: 0;
+		margin: 0;
+		text-transform: none;
+		vertical-align: baseline;
+		font-size: 1em;
+		height: auto;
+	}
+
+	.button-connection{
+		margin-bottom: 40px;
+	}
+
+	form .row{
+		padding-left: 11px;
+	}
+}

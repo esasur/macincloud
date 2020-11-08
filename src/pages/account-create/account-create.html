@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>
+      Inscription sur ES ASUR
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content class="home">
+
+  <!-- Pour la publicité -->
+<!--   <ion-row>
+    <div class="publicite_top" *ngIf="mikiPublicite.publicites != undefined && mikiPublicite.publicites.top.length > 0" [innerHTML]="mikiPublicite.current('top')"></div>
+  </ion-row> -->
+
+
+  
+  <form [formGroup]="createAccountForm" (ngSubmit)="onSubmit(createAccountForm.value)">
+    
+    <ion-item [class.error]="!createAccountForm.controls.lastname.valid && createAccountForm.controls.lastname.touched">
+      <ion-label stacked>Nom :</ion-label>
+      <ion-input type="text" formControlName="lastname"></ion-input>
+    </ion-item>
+    <div *ngIf="createAccountForm.controls.lastname.hasError('required') && (createAccountForm.controls.lastname.touched)" class="error-box">
+      * Le nom n'a pas été fourni
+    </div>
+
+
+    <ion-item [class.error]="!createAccountForm.controls.firstname.valid && createAccountForm.controls.firstname.touched">
+      <ion-label stacked>Prénom :</ion-label>
+      <ion-input type="text" formControlName="firstname"></ion-input>
+    </ion-item>
+    <div *ngIf="createAccountForm.controls.firstname.hasError('required') && createAccountForm.controls.firstname.touched" class="error-box">
+      * Le prénom n'a pas été fourni
+    </div>
+
+    <ion-item [class.error]="!createAccountForm.controls.email.valid && createAccountForm.controls.email.touched">
+      <ion-label stacked>Adresse e-mail</ion-label>
+      <ion-input type="email" formControlName="email"></ion-input>
+    </ion-item>
+
+    <div *ngIf="createAccountForm.controls.email.hasError('required') && createAccountForm.controls.email.touched" class="error-box">
+    	* L'adresse e-mail n'a pas été fournie
+    </div>
+    <div *ngIf="createAccountForm.controls.email.hasError('invalidEmailAddress') && createAccountForm.controls.email.touched" class="error-box">
+      * L'adresse e-mail est invalide !
+    </div>
+
+    <div formGroupName="passwords" [class.error]="!createAccountForm.controls.passwords.valid">
+      <ion-item [class.error]="!createAccountForm.controls.passwords.controls.password.valid && createAccountForm.controls.passwords.controls.password.touched">
+        <ion-label stacked>Mot de passe</ion-label>
+        <ion-input type="password" formControlName="password" ></ion-input>
+      </ion-item>
+
+      <div *ngIf="createAccountForm.controls.passwords.controls.password.hasError('required') && createAccountForm.controls.passwords.controls.password.touched" class="error-box">
+        * Le mot de passe n'a pas été fourni
+      </div>
+
+      <ion-item [class.error]="!createAccountForm.controls.passwords.controls.password2.valid && createAccountForm.controls.passwords.controls.password2.touched">
+        <ion-label stacked>Confirmer votre mot de passe</ion-label>
+        <ion-input type="password" formControlName="password2" ></ion-input>
+      </ion-item>
+
+      <div *ngIf="createAccountForm.controls.passwords.controls.password2.hasError('required') && createAccountForm.controls.passwords.controls.password2.touched" class="error-box">
+        * Le mot de passe n'a pas été fourni
+      </div>
+
+      <div *ngIf="createAccountForm.controls.passwords.controls.password2.value != createAccountForm.controls.passwords.controls.password.value && createAccountForm.controls.passwords.controls.password2.touched" class="error-box">
+        * Les mots de passe ne concordent pas
+      </div>
+    </div>
+
+    <ion-item [class.error]="!createAccountForm.controls.createAccountConditions.valid && createAccountForm.controls.createAccountConditions.touched">
+        <ion-label>Accepter les <button ion-button clear (click)="openConditions()" class="button-modalites">conditions d'utilisation</button> *</ion-label>
+        <ion-checkbox formControlName="createAccountConditions"></ion-checkbox>
+      </ion-item>
+      <div *ngIf="createAccountForm.controls.createAccountConditions.hasError('notChecked') && createAccountForm.controls.createAccountConditions.touched" class="error-box">
+        * Vous devez accepter les conditions d'utilisation !
+      </div>
+
+    <br/><br/> 
+    <button ion-button type="submit" class="custom-button" [disabled]="!createAccountForm.valid" block>Créer mon compte</button>
+    <!-- <button ion-button type="submit" class="custom-button" block>Créer mon compte</button> -->
+  </form>
+</ion-content>

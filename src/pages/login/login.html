@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>
+      Authentification
+    </ion-title>
+  </ion-navbar>
+</ion-header> 
+
+<ion-content class="home ion-padding">
+  
+  <!-- Pour la publicité -->
+  <!-- <ion-row>
+    <div class="publicite_top" *ngIf="mikiPublicite.publicites != undefined && mikiPublicite.publicites.top.length > 0" [innerHTML]="mikiPublicite.current('top')"></div>
+  </ion-row> -->
+
+
+
+  <form [formGroup]="authForm" (ngSubmit)="onSubmit(authForm.value)">
+    
+    <ion-item [class.error]="!authForm.controls.email.valid && authForm.controls.email.touched">
+      <ion-label stacked>Adresse e-mail</ion-label>
+      <ion-input type="email" value="" formControlName="email"></ion-input>
+    </ion-item>
+
+    <div *ngIf="authForm.controls.email.hasError('required') && authForm.controls.email.touched" class="error-box">
+    	* L'adresse e-mail n'a pas été fournie
+    </div>
+    <div *ngIf="authForm.controls.email.hasError('invalidEmailAddress') && authForm.controls.email.touched" class="error-box">
+      * L'adresse e-mail est invalide !
+    </div>
+
+    <ion-item [class.error]="!authForm.controls.password.valid && authForm.controls.password.touched">
+      <ion-label stacked>Mot de passe</ion-label>
+      <ion-input type="password" value="" formControlName="password" ></ion-input>
+    </ion-item>
+
+    <div *ngIf="authForm.controls.password.hasError('required') && authForm.controls.password.touched" class="error-box">
+    	* Le mot de passe n'a pas été fourni
+    </div>
+
+    <br/><br/> 
+    <button ion-button type="submit" class="custom-button" [disabled]="!authForm.valid" block>Se connecter</button>
+  </form>
+</ion-content>

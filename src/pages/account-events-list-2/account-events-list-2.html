@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>{{pageTitle}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="events-list ion-padding">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingText="Tirer pour mettre à jour"
+      refreshingText="Mise à jour...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+
+
+  <!-- Pour la publicité -->
+  <ion-row>
+    <div class="publicite_top" *ngIf="idCategory == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+    <div class="publicite_top" *ngIf="idCategory == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+  </ion-row>
+
+  
+
+  <ion-searchbar
+    [(ngModel)]="search"
+    [showCancelButton]="true"
+    [placeholder]="Rechercher"
+    [cancelButtonText]="Annuler"
+    (ionInput)="searchEvents($event)"
+    (ionCancel)="clearSearchEvents($event)">
+  </ion-searchbar>
+  <ion-list>
+    <!-- s'il aucun event n'a été trouvé -->
+    <ion-item *ngIf="foundEvents.length == 0">
+      <h2>Aucune formation pour cette sélection actuellement</h2>
+    </ion-item>
+
+    <ion-item *ngFor="let event of foundEvents" (click)="eventClick($event, event)" [ngClass]="{passed: !event.futur}">
+      <ion-thumbnail item-left>
+        <img [src]="event.pic">
+      </ion-thumbnail>
+      <h2>{{event.description.fr}}</h2>
+      <p *ngIf="event.date_start != '0000-00-00 00:00:00'">{{events.getDate(event.date_start)}}<span *ngIf="event.date_start != event.date_stop"> - {{events.getDate(event.date_stop)}}</span></p>
+      <p *ngIf="event.date_start == '0000-00-00 00:00:00'">Date précisée ultérieurement</p>
+      <button ion-button clear item-right>Détails</button>
+    </ion-item>
+  </ion-list>
+</ion-content>

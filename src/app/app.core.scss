@@ -1,0 +1,191 @@
+// http://ionicframework.com/docs/v2/theming/
+
+
+// App Shared Imports
+// --------------------------------------------------
+// These are the imports which make up the design of this app.
+// By default each design mode includes these shared imports.
+// App Shared Sass variables belong in app.variables.scss.
+
+@import "../pages/accueil/accueil";
+@import "../pages/event-details-1/event-details-1";
+@import "../pages/event-details-2/event-details-2";
+@import "../pages/event-details-3/event-details-3";
+@import "../pages/account-edit/account-edit";
+@import "../pages/documents/documents";
+
+
+ion-input, ion-select{
+
+	&.ng-touched.ng-valid[required] {
+	  border-left: 5px solid #42A948; /* green */
+	  padding-left: 10px;
+	}
+	
+	&.ng-touched.ng-invalid {
+	  border-left: 5px solid #a94442; /* red */
+	  padding-left: 10px;
+	}
+}
+
+ion-label[floating]{
+	padding-left: 10px;	  	
+}
+
+.input-has-focus ion-label[floating], .input-has-value ion-label[floating]{
+	padding-left: 0;
+}
+
+
+.toast-success{
+	.toast-wrapper{
+    background: #DFF2BF;
+	}
+
+	.toast-message,
+	.button-clear{
+		color: #4F8A10;
+	}
+}
+
+.toast-error{
+	.toast-wrapper{
+    background: #FFBABA;
+	}
+
+	.toast-message,
+	.button-clear{
+		color: #D8000C;
+	}
+}
+
+.toast-warning{
+	.toast-wrapper{
+    background: #FEEFB3;
+	}
+
+	.toast-message,
+	.button-clear{
+		color: #9F6000;
+	}
+}
+
+
+
+// pour les cours passés
+.passed{
+	background: #ececec;
+}
+
+
+
+// pour les icônes
+.item-icon{
+	color: $color1;
+}
+
+
+
+// pour l'affichage des listes
+ion-list .item-inner{
+	border-color: $color1;
+}
+
+
+
+// pour le titre d'une liste
+ion-list-header{
+	border-top: solid;
+	border-bottom: solid;
+	border-color: $color1;
+	margin-top: 40px;
+	margin-bottom: 20px;	
+}
+
+
+
+// pour la barre de navigation
+ion-navbar-section,
+.toolbar{
+	// background: url('../../assets/img/home-background.jpg') no-repeat center center;
+	background: url('../assets/img/home-background.jpg') no-repeat center center;
+}
+
+.toolbar-background{
+	background: rgba(#000000, 0.75);
+}
+
+.bar-button-default{
+	color: $color1 !important;
+}
+
+.toolbar-title{
+	color: $color2;
+}
+
+
+
+
+.center{
+	text-align: center;
+}
+
+.full_width{
+	width: 100%;
+}
+
+.full_height{
+	height: 100%;
+}
+
+
+
+// pour la publicité "home"
+.publicite-home{
+	height: 100%;
+}
+.publicite-home__title{
+	height: 3rem;
+}
+.publicite-home__publicite{
+	height: 100%;
+	width: 100%;
+
+	img{
+		max-height: 100%;
+		max-width: 100%;
+	}
+}
+// fin de la publicité "home"
+
+
+
+// pour la publicité "top"
+.publicite_top{
+	text-align: center;
+	padding: 10px;
+	width: 100%;
+
+	img{
+		max-height: 80px;
+	}
+}
+// fin de la publicité "top"
+
+
+
+.select_id_theme{
+	max-width: 70%;
+}
+
+
+
+// pour un cours complet
+.cours_complet{
+	float: right;
+	color: red !important;
+}
+
+.toolbar-title{
+	padding: 0;
+}

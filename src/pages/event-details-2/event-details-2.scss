@@ -1,0 +1,23 @@
+event-details-2 {
+	.bloc-info{
+		border-bottom: solid 1px $color1;
+		padding: 40px 20px 20px 20px;
+	}
+
+	h2{
+		margin-bottom: 20px;
+	}
+
+	.bloc-info:last-child{
+		border-bottom: none;
+	}
+
+	.bloc-info__content{
+		white-space: pre-line;
+	}
+
+	.cloc-info__ellipsis{
+		text-align: center;
+		margin-top: 25px;
+	}
+}

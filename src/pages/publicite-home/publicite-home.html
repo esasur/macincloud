@@ -1,0 +1,9 @@
+<ion-content class="ion-padding">
+  <div class='publicite-home'>
+    <div class='publicite-home__title center full_width full_height'>Publicité</div>
+    <ion-row center class='publicite-home__publicite-content'>
+      <div class='center full_width publicite-home__publicite' [innerHTML]="mikiPublicite.current(pubType) != undefined ? mikiPublicite.current(pubType) : ''"></div>
+    </ion-row>
+    <button ion-button block class='publicite-home__button' (click)="close()"  [hidden]="!printButton">Fermer</button>
+  </div>
+</ion-content>

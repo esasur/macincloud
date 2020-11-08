@@ -1,0 +1,94 @@
+<ion-header>
+	<ion-navbar>
+	  <ion-title>
+	  	<div class="toolbar-title" [innerHTML]="eventTitle"></div>
+	  </ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+
+<ion-content class="event-details-1">
+
+	<!-- Pour la publicité -->
+  	<ion-row>
+	  	<div class="publicite_top" *ngIf="myEvent.category.id == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+	    <div class="publicite_top" *ngIf="myEvent.category.id == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+	</ion-row>
+
+	
+
+	<ion-row>
+		<h3 class="event-title" [innerHTML]="eventTitle"></h3>
+	</ion-row>
+
+	<!-- affiche la description uniquement pour la Formation Continue -->
+	<ion-row *ngIf="myEvent.category.id == 1">
+		<h4 class="event-description" [innerHTML]="eventDescription"></h4>
+	</ion-row>
+
+	<ion-row *ngIf="eventPic != ''" class="event-picture">
+		<img [src]="eventPic">
+	</ion-row>
+
+	<ion-row class="event-category">
+		<ion-col width-33><strong>Catégories</strong></ion-col>
+		<ion-col width-67 [innerHTML]="eventCategories"></ion-col>
+	</ion-row>
+	<ion-row class="event-category">
+		<ion-col width-33><strong>Thème</strong></ion-col>
+		<ion-col width-67>{{eventTheme}}</ion-col>
+	</ion-row>
+	<ion-row class="event-pitch" *ngIf="myEvent.pitch != ''">
+		<ion-col width-33><strong>Pitch</strong></ion-col>
+		<ion-col width-67>{{myEvent.pitch}}</ion-col>
+	</ion-row>
+	<ion-row class="event-dates">
+		<ion-col width-33><strong>Début</strong></ion-col>
+		<ion-col width-67>{{eventDateStart}}</ion-col>
+	</ion-row>
+	<!-- <ion-row *ngIf="eventDateStop != eventDateStart" class="event-dates"> -->
+	<ion-row class="event-dates">
+		<ion-col width-33><strong>Fin</strong></ion-col>
+		<ion-col width-67>{{eventDateStop}}</ion-col>
+	</ion-row>
+	<ion-row class="event-lieu">
+		<ion-col width-33><strong>Lieu</strong></ion-col>
+		<ion-col width-67 [innerHTML]="eventAddress"></ion-col>
+	</ion-row>
+	<ion-row class="event-participants">
+		<ion-col width-33><strong>Participants</strong></ion-col>
+		<ion-col width-67>{{myEvent.nb_participants}}</ion-col>
+	</ion-row>
+	<ion-row class="event-places-disponibles">
+		<ion-col width-33><strong>Places disponibles</strong></ion-col>
+		<ion-col width-67>{{msgParticipants}}</ion-col>
+	</ion-row>
+	<ion-row class="event-places-disponibles">
+		<ion-col width-33><strong>Tarif</strong></ion-col>
+		<ion-col width-67 [innerHTML]="entrance"></ion-col>
+	</ion-row>
+
+	<ion-row class="event-web" *ngIf="myEvent.web != ''">
+		<ion-col width-33><strong>Site Internet</strong></ion-col>
+		<ion-col width-67><a onclick="window.open(this.href, '_system', 'location=yes');" [href]=myEvent.web>{{myEvent.web}}</a></ion-col>
+	</ion-row>
+	<ion-row class="event-organisateur" *ngIf="myEvent.organizer != ''">
+		<ion-col width-33><strong>Organisateur</strong></ion-col>
+		<ion-col width-67>{{myEvent.organizer}}</ion-col>
+	</ion-row>
+	<ion-row class="event-intervenants" *ngIf="myEvent.intervenants != ''">
+		<ion-col width-33><strong>Intervenants</strong></ion-col>
+		<ion-col width-67>{{myEvent.intervenants}}</ion-col>
+	</ion-row>
+	<ion-row class="event-certifications" *ngIf="myEvent.certifications != ''">
+		<ion-col width-33><strong>Certifications</strong></ion-col>
+		<ion-col width-67>{{myEvent.certifications}}</ion-col>
+	</ion-row>
+	<ion-row class="event-pre-requis" *ngIf="myEvent.pre_requis != ''">
+		<ion-col width-33><strong>Pré requis</strong></ion-col>
+		<ion-col width-67>{{myEvent.pre_requis}}</ion-col>
+	</ion-row>
+	
+	
+</ion-content>

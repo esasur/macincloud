@@ -1,0 +1,45 @@
+<ion-header>
+	<ion-navbar>
+	  <ion-title>
+	  	<div class="toolbar-title" [innerHTML]="eventTitle"></div>
+	  </ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+<ion-content class="event-details-2">
+	
+	<!-- Pour la publicité -->
+	<ion-row>
+	  	<div class="publicite_top" *ngIf="myEvent.category.id == 1 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.fc_top != undefined && mikiPublicite.publicites.fc_top.length > 0" [innerHTML]="mikiPublicite.current('fc_top')"></div>
+	    <div class="publicite_top" *ngIf="myEvent.category.id == 15 && mikiPublicite.publicites != undefined && mikiPublicite.publicites.ps_top != undefined && mikiPublicite.publicites.ps_top.length > 0" [innerHTML]="mikiPublicite.current('ps_top')"></div>
+	</ion-row>
+
+	<div class="bloc-info" *ngIf="myEvent.objectif != ''">
+		<h2>Objectif</h2>
+		<div class='bloc-info__content'>
+			{{myEvent.objectif}}
+		</div>
+		<div class="cloc-info__ellipsis">
+			<img src="assets/img/ellipsis.png" />
+		</div>
+	</div>
+	<div class="bloc-info" *ngIf="myEvent.contenu != ''">
+		<h2>Contenu</h2>
+		<div class='bloc-info__content'>
+			{{myEvent.contenu}}
+		</div>
+		<div class="cloc-info__ellipsis">
+			<img src="assets/img/ellipsis.png" />
+		</div>
+	</div>
+	<div class="bloc-info" *ngIf="eventDescription != ''">
+		<h2>Informations complémentaires</h2>
+		<div class='bloc-info__content'>
+			{{eventDescription}}
+		</div>
+		<div class="cloc-info__ellipsis">
+			<img src="assets/img/ellipsis.png" />
+		</div>
+	</div>
+</ion-content>

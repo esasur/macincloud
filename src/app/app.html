@@ -1,0 +1,61 @@
+<ion-nav id="nav" #content [root]="rootPage"></ion-nav>
+
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-list>
+      <button ion-item (click)="openPage(accueilPage)">
+        Accueil
+      </button>
+
+      <button ion-item (click)="openPage(loginPage)" *ngIf="!mikiPerson.user">
+        Se connecter
+      </button>
+      <button ion-item (click)="openPage(CreateAccountPage)" *ngIf="!mikiPerson.user">
+        Créer mon compte
+      </button>
+
+      <button ion-item (click)="openEvents(30)">
+        Ambulancier
+      </button>
+      <button ion-item (click)="openEvents(31)">
+        Professionnel médical
+      </button>
+      <button ion-item (click)="openEvents(32)">
+        Instructeur/Formateur
+      </button>
+      <button ion-item (click)="openEvents(33)">
+        Entreprise/Association
+      </button>
+      <button ion-item (click)="openEvents(34)">
+        Grand Public
+      </button>
+      <button ion-item (click)="openEvents()">
+        Toutes nos formations
+      </button>
+
+      <button ion-item (click)="openPage(DocumentsList)">
+        Documents
+      </button>
+      <!-- <button ion-item (click)="openPage(1)">
+        Documents<br>1ers secours
+      </button> -->
+
+      <button ion-item (click)="openPage(accountEdit)" *ngIf="mikiPerson.user">
+        Mon compte
+      </button>
+      <button ion-item (click)="openPage(accountEventsList)" *ngIf="mikiPerson.user">
+        Mes cours
+      </button>
+      
+      <button ion-item (click)="disconnect()" *ngIf="mikiPerson.user">
+        Se déconnecter
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>

@@ -1,0 +1,29 @@
+<ion-header>
+	<ion-navbar>
+	  <button ion-button menuToggle>
+	    <ion-icon name="menu"></ion-icon>
+	  </button>
+	  <ion-title>
+	    Documents
+	  </ion-title>
+	</ion-navbar>
+</ion-header>
+ 
+<ion-content class="documents">
+
+	<ion-list *ngIf="mikiDocuments.documents != undefined && mikiDocuments.documents != false">
+	    <ion-item  *ngFor="let doc of mikiDocuments.documents[categoryId]" (click)="openDoc(doc.path)">
+			<h2 class='document__title'>{{doc.title.fr}}</h2>
+			<p class="document__description">{{doc.description.fr}}</p>
+			<ion-icon name="download" item-right></ion-icon>
+	    </ion-item>
+	</ion-list>
+
+	<!-- s'il aucun event n'a été trouvé -->
+	<ion-list *ngIf="mikiDocuments.documents == undefined || mikiDocuments.documents == false">
+	    <ion-item>
+	      <h2>Aucun document à afficher actuellement</h2>
+	    </ion-item>
+	</ion-list>
+
+</ion-content>

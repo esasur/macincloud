@@ -1,0 +1,285 @@
+<ion-header>
+	<ion-navbar>
+	  <button ion-button menuToggle>
+	    <ion-icon name="menu"></ion-icon>
+	  </button>
+	  <ion-title>Mon compte</ion-title>
+	</ion-navbar>
+</ion-header>
+ 
+<ion-content class="account-edit">
+
+	<!-- Pour la publicité -->
+	<!-- <ion-row>
+		<div class="publicite_top" *ngIf="mikiPublicite.publicites != undefined && mikiPublicite.publicites.top.length > 0" [innerHTML]="mikiPublicite.current('top')"></div>
+	</ion-row> -->
+
+	
+
+	<form [formGroup]="accountEditForm" (ngSubmit)="onSubmit(accountEditForm.value)">
+	    
+		<ion-list-header>
+			<ion-label>Données personnelles</ion-label>
+		</ion-list-header>
+		
+
+		<!-- si l'utilisateur n'est pas loggué ou que le champ n'est pas rempli, on affiche le champ du formulaire -->
+		<ion-item>
+			<ion-label class="required_field">Genre : *</ion-label>
+			<ion-select formControlName="type">
+				<ion-option value="M">M</ion-option>
+				<ion-option value="Mlle">Mlle</ion-option>
+				<ion-option value="Mme">Mme</ion-option>
+			</ion-select>
+		</ion-item>
+    
+
+		<ion-item [class.error]="!accountEditForm.controls.lastname.valid && accountEditForm.lastname.touched">
+			<ion-label class="required_field" stacked>Nom : *</ion-label>
+			<ion-input type="text" formControlName="lastname"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.lastname.hasError('required') && accountEditForm.controls.lastname.touched" class="error-box">
+			* Le nom n'a pas été fourni
+		</div>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.firstname.valid && accountEditForm.controls.firstname.touched">
+			<ion-label class="required_field" stacked>Prénom : *</ion-label>
+			<ion-input type="text" formControlName="firstname"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.firstname.hasError('required') && accountEditForm.controls.firstname.touched" class="error-box">
+			* Le prénom n'a pas été fourni
+		</div>
+
+
+		<ion-item>
+			<ion-label class="required_field">Date de naissance : *</ion-label>
+			<ion-select formControlName="birthday_day">
+				<ion-option *ngFor="let day of days" [value]="day">{{day}}</ion-option>
+			</ion-select>&nbsp;
+			<ion-select formControlName="birthday_month">
+				<ion-option *ngFor="let month of months; let i = index" [value]="i">{{month}}</ion-option>
+			</ion-select>&nbsp;
+			<ion-select formControlName="birthday_year">
+				<ion-option *ngFor="let year of years" [value]="year">{{year}}</ion-option>
+			</ion-select>
+		</ion-item>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.addressMailingType.valid && accountEditForm.controls.addressMailingType.touched">
+			<ion-label class="required_field" stacked>Adresse pour le courrier : *</ion-label>
+			<ion-select formControlName="addressMailingType">
+				<ion-option value="">Veuillez choisir une adresse</ion-option>
+				<ion-option value="Professionnelle">Professionnelle</ion-option>
+				<ion-option value="Privée">Privée</ion-option>
+			</ion-select>
+		</ion-item>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.addressBillingType.valid && accountEditForm.controls.addressBillingType.touched">
+			<ion-label class="required_field" stacked>Adresse pour la facturation : *</ion-label>
+			<ion-select formControlName="addressBillingType">
+				<ion-option value="">Veuillez choisir une adresse</ion-option>
+				<ion-option value="Professionnelle">Professionnelle</ion-option>
+				<ion-option value="Privée">Privée</ion-option>
+			</ion-select>
+		</ion-item>
+
+
+		<!-- Coordonnées privées -->
+
+		<ion-item [class.error]="!accountEditForm.controls.privateAddress.valid && accountEditForm.controls.privateAddress.touched">
+			<ion-label class="required_field" stacked>Rue : *</ion-label>
+			<ion-input type="text" formControlName="privateAddress"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateAddress.hasError('required') && accountEditForm.controls.privateAddress.touched" class="error-box">
+			* La rue n'a pas été fournie
+		</div>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.privateNpa.valid && accountEditForm.controls.privateNpa.touched">
+			<ion-label class="required_field" stacked>Code postal : *</ion-label>
+			<ion-input type="text" formControlName="privateNpa"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateNpa.hasError('required') && accountEditForm.controls.privateNpa.touched" class="error-box">
+			* Le code postal n'a pas été fourni
+		</div>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.privateCity.valid && accountEditForm.controls.privateCity.touched">
+			<ion-label class="required_field" stacked>Localité : *</ion-label>
+			<ion-input type="text" formControlName="privateCity"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateCity.hasError('required') && accountEditForm.controls.privateCity.touched" class="error-box">
+			* La localité n'a pas été fournie
+		</div>
+
+
+		<ion-item>
+			<ion-label class="required_field" stacked>Pays : *</ion-label>
+			<ion-select formControlName="privateCountry">
+				<ion-option value="">Veuillez choisir un pays</ion-option>
+				<ion-option *ngFor="let country of countries" [value]="country.id">{{country.name.fr}}</ion-option>
+			</ion-select>
+		</ion-item>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.privateMobile.valid && accountEditForm.controls.privateMobile.touched">
+			<ion-label class="required_field" stacked>Tél. mobile : *</ion-label>
+			<ion-input type="text" formControlName="privateMobile"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateMobile.hasError('required') && accountEditForm.controls.privateMobile.touched" class="error-box">
+			* Le téléphone mobile n'a pas été fourni
+		</div>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.privateFixe.valid && privateFixe.touched">
+			<ion-label stacked>Tél. fixe :</ion-label>
+			<ion-input type="text" formControlName="privateFixe"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateFixe.hasError('required') && accountEditForm.controls.privateFixe.touched" class="error-box">
+			* Le téléphone fixe n'a pas été fourni
+		</div>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.privateEmail.valid && accountEditForm.controls.privateEmail.touched">
+			<ion-label class="required_field" stacked>Email : *</ion-label>
+			<ion-input type="email" formControlName="privateEmail"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.privateEmail.hasError('required') && accountEditForm.controls.privateEmail.touched" class="error-box">
+			* L'adresse e-mail n'a pas été fournie
+		</div>
+		<div *ngIf="accountEditForm.controls.privateEmail.hasError('invalidEmailAddress') && accountEditForm.controls.privateEmail.touched" class="error-box">
+			* L'adresse e-mail est invalide !
+		</div>
+
+
+
+    	<!-- Coordonnées professionnelles -->
+
+		<ion-list-header>
+			<ion-label>Données professionnelles</ion-label>
+		</ion-list-header>
+
+		<ion-item [class.error]="!accountEditForm.controls.proCompany.valid && accountEditForm.controls.proCompany.touched">
+			<ion-label class="required_field" stacked>Nom de l'entreprise : *</ion-label>
+			<ion-input type="text" formControlName="proCompany"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proCompany.hasError('required') && accountEditForm.controls.proCompany.touched" class="error-box">
+			* Le nom de l'entreprise n'a pas été fourni
+		</div>
+
+
+		<ion-item>
+			<ion-label class="required_field">Code professionnel : *</ion-label>
+			<ion-select formControlName="proCompanyCode">
+				<ion-option *ngFor="let codePro of codesPros" [value]="codePro.numero">{{codePro.nom}}</ion-option>
+
+				<!-- on affiche la possibilité de mettre un code "autre" -->
+				<ion-option [value]="99">99 Autre</ion-option>
+			</ion-select>
+		</ion-item>
+
+
+		<ion-item *ngIf="accountEditForm.controls.proCompanyCode.value == 99" [class.error]="!accountEditForm.controls.proCompanyCodeOther.valid && accountEditForm.controls.proCompanyCodeOther.touched">
+			<ion-label class="required_field" stacked>Autre code professionnel : *</ion-label>
+			<ion-input type="text" formControlName="proCompanyCodeOther"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proCompanyCode.value == 99 && accountEditForm.controls.proCompanyCodeOther.hasError('required') && accountEditForm.controls.proCompanyCodeOther.touched" class="error-box">
+			* Le code professionnel n'a pas été fourni
+		</div>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.proAddress.valid && accountEditForm.controls.proAddress.touched">
+			<ion-label class="required_field" stacked>Rue : *</ion-label>
+			<ion-input type="text" formControlName="proAddress"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proAddress.hasError('required') && accountEditForm.controls.proAddress.touched" class="error-box">
+			* La rue n'a pas été fournie
+		</div>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.proNpa.valid && accountEditForm.controls.proNpa.touched">
+			<ion-label class="required_field" stacked>Code postal : *</ion-label>
+			<ion-input type="text" formControlName="proNpa"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proNpa.hasError('required') && accountEditForm.controls.proNpa.touched" class="error-box">
+			* Le code postal n'a pas été fourni
+		</div>
+		
+
+		<ion-item [class.error]="!accountEditForm.controls.proCity.valid && accountEditForm.controls.proCity.touched">
+			<ion-label class="required_field" stacked>Localité : *</ion-label>
+			<ion-input type="text" formControlName="proCity"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proCity.hasError('required') && accountEditForm.controls.proCity.touched" class="error-box">
+			* La localité n'a pas été fournie
+		</div>
+
+
+		<ion-item>
+			<ion-label class="required_field" stacked>Pays : *</ion-label>
+			<ion-select formControlName="proCountry">
+				<ion-option value="">Veuillez choisir un pays</ion-option>
+				<ion-option *ngFor="let country of countries" [value]="country.id">{{country.name.fr}}</ion-option>
+			</ion-select>
+		</ion-item>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.proTel.valid && accountEditForm.controls.proTel.touched">
+			<ion-label class="required_field" stacked>Tél : *</ion-label>
+			<ion-input type="text" formControlName="proTel"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proTel.hasError('required') && accountEditForm.controls.proTel.touched" class="error-box">
+			* Le téléphone n'a pas été fourni
+		</div>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.proFax.valid && accountEditForm.controls.proFax.touched">
+			<ion-label stacked>Fax :</ion-label>
+			<ion-input type="text" formControlName="proFax"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proFax.hasError('required') && accountEditForm.controls.proFax.touched" class="error-box">
+			* Le fax n'a pas été fourni
+		</div>
+
+
+		<ion-item [class.error]="!accountEditForm.controls.proEmail.valid && accountEditForm.controls.proEmail.touched">
+			<ion-label class="required_field" stacked>Email : *</ion-label>
+			<ion-input type="email" formControlName="proEmail"></ion-input>
+		</ion-item>
+		<div *ngIf="accountEditForm.controls.proEmail.hasError('required') && accountEditForm.controls.proEmail.touched" class="error-box">
+			* L'adresse e-mail n'a pas été fournie
+		</div>
+		<div *ngIf="accountEditForm.controls.proEmail.hasError('invalidEmailAddress') && accountEditForm.controls.proEmail.touched" class="error-box">
+			* L'adresse e-mail est invalide !
+		</div>
+
+
+		<ion-list-header>
+			<ion-label>Mot de passe</ion-label>
+		</ion-list-header>
+
+		<div formGroupName="passwords" [class.error]="!accountEditForm.controls.passwords.valid">
+			<ion-item [class.error]="!accountEditForm.controls.passwords.controls.password1.valid && accountEditForm.controls.passwords.controls.password1.touched">
+				<ion-label class="required_field" stacked>Mot de passe (laisser vide si inchangé) : </ion-label>
+				<ion-input type="password" formControlName="password1"></ion-input>
+			</ion-item>
+
+			<ion-item [class.error]="!accountEditForm.controls.passwords.controls.password2.valid && accountEditForm.controls.passwords.controls.password2.touched">
+				<ion-label class="required_field" stacked>Confirmer le mot de passe : </ion-label>
+				<ion-input type="password" formControlName="password2"></ion-input>
+			</ion-item>
+
+			<div *ngIf="accountEditForm.controls.passwords.controls.password2.value != accountEditForm.controls.passwords.controls.password1.value && accountEditForm.controls.passwords.controls.password2.touched" class="error-box">
+		    	* Les mots de passe ne concordent pas
+		    </div>
+		</div>
+
+		<br/><br/>
+		<button ion-button type="submit" class="custom-button" [disabled]="!accountEditForm.valid" block>Enregistrer</button>
+		<br/><br/>
+		<div class="delete-account"><a (click)="deleteAccountConfim()">Supprimer mon compte utilisateur</a></div>
+		<br/><br/>
+	</form>
+</ion-content>

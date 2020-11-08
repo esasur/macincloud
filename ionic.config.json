@@ -1,0 +1,17 @@
+{
+  "name": "esasur",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ],
+  "id": ""
+}
